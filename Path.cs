@@ -1,29 +1,37 @@
 using UnityEngine;
 using System.Collections;
 
-public class Places : MonoBehaviour
+public class Path : MonoBehaviour
 {
     [SerializeField] private float _speed;
-    [SerializeField] private Transform _places;
+    [SerializeField] private Transform[] _points;
     
-    private Transform[] _points;
     private int _currentPoint = 0;
 
-    void Start() 
+#if UNITY_EDITOR
+    [ContextMenu("Refresh Child Array")]
+    private void RefreshChildArray()
     {
-        _points = new Transform[_places.childCount];
+        int pointCount = transform.childCount;
+        _points = new Transform[pointCount];
 
-        for (int i = 0; i < _points.Length; i++)
-            _points[i] = _places.GetChild(i);
+        for (int i = 0; i < pointCount; i++)
+            _points[i] = transform.GetChild(i);
+    }
+#endif
 
+    private void Start() 
+    {
         StartCoroutine(MoveToPoints());
     }
 
     private IEnumerator MoveToPoints()
     {
+        float distanceToTarget = 0.01f;
+
         while (_currentPoint < _points.Length)
         {
-            if (transform.position == _points[_currentPoint].transform.position)
+            if (transform.position.IsEnoughClose(_points[_currentPoint].transform.position, distanceToTarget))
             {
                 _currentPoint = (_currentPoint + 1) % _points.Length;
             }

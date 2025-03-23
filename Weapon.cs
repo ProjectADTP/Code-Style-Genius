@@ -1,14 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-
-public class Shooting : MonoBehaviour
+public class Weapon : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _shootDelay;
-    [SerializeField] private GameObject _prefab;
-    [SerializeField] private Transform _targetShoot;
+    [SerializeField] private Bullet _bullet;
+    [SerializeField] private Transform _target;
 
     private WaitForSeconds _delay;
     private Rigidbody _rigidbody;
@@ -25,9 +23,9 @@ public class Shooting : MonoBehaviour
     {
         while (enabled)
         {
-            Vector3 _direction = (_targetShoot.position - transform.position).normalized;
+            Vector3 _direction = (_target.position - transform.position).normalized;
             
-            Instantiate(_prefab, transform.position + _direction, Quaternion.LookRotation(_direction));
+            Instantiate(_bullet, transform.position + _direction, Quaternion.LookRotation(_direction));
 
             _rigidbody.velocity = _direction * _speed;
 
